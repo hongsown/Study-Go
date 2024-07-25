@@ -2,6 +2,7 @@ package main
 
 import (
 	"StudyGo/component/appctx"
+	"StudyGo/middleware"
 	"StudyGo/module/restaurant/transport/ginrestaurant"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
@@ -20,13 +21,15 @@ func main() {
 	}
 	db = db.Debug()
 	//GET
+	appCtx := appctx.NewAppContext(db)
 	r := gin.Default()
+	r.Use(middleware.Recover(appctx.NewAppContext(db)))
+
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"message": "pong",
 		})
 	})
-	appCtx := appctx.NewAppContext(db)
 
 	//POST
 	v1 := r.Group("/v1")

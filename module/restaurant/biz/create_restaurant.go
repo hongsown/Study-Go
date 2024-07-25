@@ -1,6 +1,7 @@
 package restaurantbiz
 
 import (
+	"StudyGo/common"
 	restaurantmodel "StudyGo/module/restaurant/model"
 	"context"
 )
@@ -19,10 +20,10 @@ func NewCreateResTauRantBiz(store CreateRestaurant) *createRestaurantBiz {
 
 func (biz *createRestaurantBiz) CreateRestaurant(ctx context.Context, data *restaurantmodel.RestaurantCreate) error {
 	if err := data.Validate(); err != nil {
-		return err
+		return common.ErrInvalidRequest(err)
 	}
 	if err := biz.store.Create(ctx, data); err != nil {
-		return err
+		return common.ErrCannotCreateEntity(restaurantmodel.EntityName, err)
 	}
 	return nil
 }

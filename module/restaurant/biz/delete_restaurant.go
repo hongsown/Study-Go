@@ -1,9 +1,9 @@
 package restaurantbiz
 
 import (
+	"StudyGo/common"
 	restaurantmodel "StudyGo/module/restaurant/model"
 	"context"
-	"errors"
 )
 
 type DeleteRestaurantStore interface {
@@ -24,13 +24,13 @@ func (biz *deleteRestaurantBiz) DeleteRestaurant(ctx context.Context, id int) er
 
 	oldData, err := biz.store.FindDataWithCondition(ctx, map[string]interface{}{"id": id})
 	if err != nil {
-		return err
+		return common.ErrEntityNotFound(err, restaurantmodel.EntityName)
 	}
 	if oldData.Status == 0 {
-		return errors.New("data has been deleted")
+		return common.ErrEntityDeleted(err, restaurantmodel.EntityName)
 	}
 	if err := biz.store.Delete(ctx, id); err != nil {
-		return err
+		return common.ErrCannotDeleteEntity(err, restaurantmodel.EntityName)
 	}
 	return nil
 }
